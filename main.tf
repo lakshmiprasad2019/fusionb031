@@ -10,3 +10,7 @@ resource "aws_vpc" "myvpc-1" {
 resource "aws_vpc" "myvpc-1" {
   cidr_block = "30.35.0.0/16"
 }
+resource "aws_instance" "myec2" {
+  ami_id = "myami"
+  type = "mytype"
+}
