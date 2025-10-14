@@ -1,12 +1,15 @@
 pipeline {
     agent any
+    
+    parameters {
+        choice(
+            name: 'TERRAFORM_ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Select whether to apply or destroy infrastructure'
+        )
+    }
 
     stages {
-        stage('Git checkout') {
-            steps {
-                git 'https://github.com/lakshmiprasad2019/fusionb031.git'
-            }
-        }
         stage('terraform init') {
             steps {
                 sh 'terraform init'
@@ -17,9 +20,15 @@ pipeline {
                 sh 'terraform plan'
             }
         }
-        stage('terraform apply') {
+        stage('terraform action') {
             steps {
-                sh 'terraform apply -auto-approve'
+                script {
+                    if (params.TERRAFORM_ACTION == 'apply') {
+                        sh 'terraform apply -auto-approve'
+                    } else if (params.TERRAFORM_ACTION == 'destroy') {
+                        sh 'terraform destroy -auto-approve'
+                    }
+                }
             }
         }
     }
